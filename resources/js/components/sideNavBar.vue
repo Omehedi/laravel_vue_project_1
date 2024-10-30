@@ -29,7 +29,7 @@
                     </a>
                     <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <router-link to="/admin/customer/customer" class="nav-link" >Customers</router-link>
+                            <router-link to="/admin/customer/customers" class="nav-link" >Customers</router-link>
                             <router-link to="/admin/customer/orders" class="nav-link" >Orders</router-link>
                         </nav>
                     </div>

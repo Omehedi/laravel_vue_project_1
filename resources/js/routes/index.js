@@ -4,6 +4,8 @@ import dashboardComponent from "../views/dashboardComponent";
 import categoryComponent from "../views/product/categoryComponent";
 import subCategoryComponent from "../views/product/subCategoryComponent";
 import productComponent from "../views/product/productComponent";
+import ordersComponent from "../views/customer/ordersComponent";
+import customersComponent from "../views/customer/customersComponent";
 
 const route = [
     {
@@ -33,5 +35,15 @@ const route = [
         name : 'about',
         component : productComponent,
     },
+    {
+        path : '/admin/customer/orders',
+        name : 'orders',
+        component : ordersComponent,
+    },
+    {
+        path : '/admin/customer/customers',
+        name : 'customers',
+        component : customersComponent,
+    }
 ];
 export default route;
