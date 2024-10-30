@@ -1094,7 +1094,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "fa fa-trash"
+      staticClass: "fa fa-trash-alt"
     })])])]);
   }), 0), _vm._v(" "), _c("form-modal", {
     on: {
@@ -1179,7 +1179,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "fa fa-trash"
+      staticClass: "fa fa-trash-alt"
     })])])]);
   }), 0), _vm._v(" "), _c("form-modal", {
     on: {

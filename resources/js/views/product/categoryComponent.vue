@@ -11,7 +11,7 @@
                         <i class="fa fa-edit"></i>
                     </a>
                     <a class="btn btn-outline-danger" @click="deleteCategory(data.id)">
-                        <i class="fa fa-trash"></i>
+                        <i class="fa fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
