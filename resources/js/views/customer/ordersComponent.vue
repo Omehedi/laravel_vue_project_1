@@ -5,7 +5,7 @@
             <div class="order-card" v-for="order in orders" :key="order.id">
                 <h2>Order #{{ order.id }}</h2>
                 <p><strong>Customer:</strong> {{ order.customerName }}</p>
-                <p><strong>Total:</strong> ${{ order.total.toFixed(2) }}</p>
+                <p><strong>Total:</strong> ${{ isNaN(order.total) ? 'N/A' : order.total.toFixed(2) }}</p>
                 <p><strong>Status:</strong> <span :class="statusClass(order.status)">{{ order.status }}</span></p>
                 <div class="actions">
                     <button @click="viewOrder(order.id)">View Details</button>
@@ -17,19 +17,31 @@
 </template>
 
 <script>
+    import axios from 'axios'; // Import axios for making HTTP requests
+
     export default {
         name: "ordersComponent",
         data() {
             return {
-                orders: [
-                    { id: 101, customerName: "John Doe", total: 250.75, status: "Shipped" },
-                    { id: 102, customerName: "Jane Smith", total: 150.5, status: "Pending" },
-                    { id: 103, customerName: "Emily Davis", total: 320.0, status: "Delivered" },
-                    { id: 104, customerName: "David Brown", total: 120.3, status: "Canceled" },
-                ],
+                orders: [], // Initialize orders array
             };
         },
+        created() {
+            this.fetchOrders(); // Fetch orders when the component is created
+        },
         methods: {
+            async fetchOrders() {
+                try {
+                    const response = await axios.get('/api/orders'); // Adjust the endpoint as needed
+                    this.orders = response.data.map(order => ({
+                        ...order,
+                        total: parseFloat(order.total) // Convert total to a number
+                    }));
+                    console.log(this.orders); // Log orders to check the structure
+                } catch (error) {
+                    console.error("Error fetching orders:", error); // Log any errors
+                }
+            },
             viewOrder(id) {
                 this.$router.push(`/orders/${id}`);
             },
@@ -47,6 +59,7 @@
         },
     };
 </script>
+
 
 <style scoped>
     .orders-container {

@@ -1,17 +1,14 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::all();
-        return response()->json($customers);
+        return response()->json(Customer::all());
     }
 
     public function show($id)
@@ -22,14 +19,16 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        $customer = Customer::create($request->only(['name', 'email']));
+        $validated = $request->validate(['name' => 'required', 'email' => 'required|email']);
+        $customer = Customer::create($validated);
         return response()->json($customer, 201);
     }
 
     public function update(Request $request, $id)
     {
         $customer = Customer::findOrFail($id);
-        $customer->update($request->only(['name', 'email']));
+        $validated = $request->validate(['name' => 'required', 'email' => 'required|email']);
+        $customer->update($validated);
         return response()->json($customer);
     }
 
@@ -39,3 +38,4 @@ class CustomerController extends Controller
         return response()->json(null, 204);
     }
 }
+
