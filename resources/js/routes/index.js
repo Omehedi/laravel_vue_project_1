@@ -15,6 +15,7 @@ import courseAddDropComponents from "../components/student/courseAddDropComponen
 import courseGraduationComponent from "../components/student/courseGraduationComponent";
 import alumniListComponent from "../components/student/alumniListComponent";
 import studentNotesComponent from "../components/student/studentNotesComponent";
+import adminProfileComponent from "../components/admin/adminProfileComponent";
 const route = [
     {
         path : '/admin/dashboard',
@@ -97,6 +98,11 @@ const route = [
         path : '/admin/student/student-notes',
         name : 'student-notes',
         component : studentNotesComponent,
+    },
+    {
+        path : '/admin/admin-profile',
+        name : 'admin-profile',
+        component : adminProfileComponent,
     },
 
 

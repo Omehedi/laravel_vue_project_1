@@ -18,15 +18,18 @@ use App\Http\Controllers\SupportController;
 
 
 
-Route::apiResource('students', StudentController::class);
+use App\Http\Controllers\ManageController;
+Route::get('/leaves', [ManageController::class, 'index']);
+Route::put('/leaves/{id}', [ManageController::class, 'update']);
+Route::post('/upload-profile-images',[\App\Http\Controllers\ProfileImageController::class, 'upload']);
+
 
 Route::get('/customers', [CustomerController::class, 'index']);
 Route::get('/customers/{id}', [CustomerController::class, 'show']);
 Route::post('/customers', [CustomerController::class, 'store']);
 Route::put('/customers/{id}', [CustomerController::class, 'update']);
 Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
-Route::get('/orders',[\App\Http\Controllers\OrderController::class, 'index']);
-Route::get('/orders/{id}',[\App\Http\Controllers\OrderController::class, 'show']);
+
 
 
 

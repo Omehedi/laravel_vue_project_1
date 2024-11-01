@@ -96,6 +96,7 @@
                             <router-link to="/admin/student/alumni-list" class="nav-link">Alumni List</router-link>
                         </nav>
                     </div>
+                    <router-link to="/admin/admin-profile" class="nav-link">My Profile</router-link>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
