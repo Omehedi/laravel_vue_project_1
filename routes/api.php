@@ -19,9 +19,14 @@ use App\Http\Controllers\SupportController;
 
 
 use App\Http\Controllers\ManageController;
+use App\Http\Controllers\ProfileImageController;
+
+Route::post('/upload-profile-image', [ProfileImageController::class, 'upload']);
+Route::get('/get-profile-image', [ProfileImageController::class, 'getProfileImage']);
+
 Route::get('/leaves', [ManageController::class, 'index']);
 Route::put('/leaves/{id}', [ManageController::class, 'update']);
-Route::post('/upload-profile-images',[\App\Http\Controllers\ProfileImageController::class, 'upload']);
+
 
 
 Route::get('/customers', [CustomerController::class, 'index']);

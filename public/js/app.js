@@ -63,77 +63,128 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "AdminProfileComponent",
   data: function data() {
     return {
       selectedImage: null,
-      profileImage: '' // Add this to manage the image source
+      profileImage: '',
+      error: null
     };
   },
   methods: {
+    fetchProfileImage: function fetchProfileImage() {
+      var _this = this;
+      return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var response, result;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return fetch("http://127.0.0.1:8000/api/get-profile-image", {
+                headers: {
+                  "Authorization": "Bearer ".concat(localStorage.getItem('token'))
+                }
+              });
+            case 3:
+              response = _context.sent;
+              if (!response.ok) {
+                _context.next = 11;
+                break;
+              }
+              _context.next = 7;
+              return response.json();
+            case 7:
+              result = _context.sent;
+              _this.profileImage = result.path || ''; // Set the profile image URL if available
+              _context.next = 12;
+              break;
+            case 11:
+              console.error("Failed to fetch profile image.");
+            case 12:
+              _context.next = 17;
+              break;
+            case 14:
+              _context.prev = 14;
+              _context.t0 = _context["catch"](0);
+              console.error("Error fetching profile image:", _context.t0);
+            case 17:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[0, 14]]);
+      }))();
+    },
+    uploadImage: function uploadImage() {
+      var _this2 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var formData, response, result, error;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              if (_this2.selectedImage) {
+                _context2.next = 3;
+                break;
+              }
+              _this2.error = "Please select an image first.";
+              return _context2.abrupt("return");
+            case 3:
+              formData = new FormData();
+              formData.append("image", _this2.selectedImage);
+              _context2.prev = 5;
+              _context2.next = 8;
+              return fetch("http://127.0.0.1:8000/api/upload-profile-image", {
+                method: "POST",
+                headers: {
+                  "Authorization": "Bearer ".concat(localStorage.getItem('token'))
+                },
+                body: formData
+              });
+            case 8:
+              response = _context2.sent;
+              if (!response.ok) {
+                _context2.next = 18;
+                break;
+              }
+              _context2.next = 12;
+              return response.json();
+            case 12:
+              result = _context2.sent;
+              _this2.profileImage = result.path;
+              _this2.error = null;
+              alert("Image uploaded successfully!");
+              _context2.next = 22;
+              break;
+            case 18:
+              _context2.next = 20;
+              return response.json();
+            case 20:
+              error = _context2.sent;
+              _this2.error = error.message || "Image upload failed.";
+            case 22:
+              _context2.next = 28;
+              break;
+            case 24:
+              _context2.prev = 24;
+              _context2.t0 = _context2["catch"](5);
+              _this2.error = "An error occurred during the upload.";
+              console.error("Error:", _context2.t0);
+            case 28:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[5, 24]]);
+      }))();
+    },
     onFileChange: function onFileChange(event) {
       var file = event.target.files[0];
       if (file) {
         this.selectedImage = file;
-        this.profileImage = URL.createObjectURL(file); // Preview the image
+        this.profileImage = URL.createObjectURL(file);
       }
-    },
-    uploadImage: function uploadImage() {
-      var _this = this;
-      return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var formData, response, result;
-        return _regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) switch (_context.prev = _context.next) {
-            case 0:
-              if (_this.selectedImage) {
-                _context.next = 3;
-                break;
-              }
-              alert("Please select an image first.");
-              return _context.abrupt("return");
-            case 3:
-              formData = new FormData();
-              formData.append("image", _this.selectedImage);
-              _context.prev = 5;
-              _context.next = 8;
-              return fetch("http://your-backend-url/api/upload-profile-image", {
-                method: "POST",
-                body: formData,
-                headers: {
-                  "X-Requested-With": "XMLHttpRequest"
-                }
-              });
-            case 8:
-              response = _context.sent;
-              if (!response.ok) {
-                _context.next = 16;
-                break;
-              }
-              _context.next = 12;
-              return response.json();
-            case 12:
-              result = _context.sent;
-              alert("Image uploaded successfully!");
-              // You can update the profileImage with the URL from result if needed
-              _context.next = 17;
-              break;
-            case 16:
-              alert("Image upload failed.");
-            case 17:
-              _context.next = 23;
-              break;
-            case 19:
-              _context.prev = 19;
-              _context.t0 = _context["catch"](5);
-              console.error("Error uploading image:", _context.t0);
-              alert("An error occurred while uploading the image.");
-            case 23:
-            case "end":
-              return _context.stop();
-          }
-        }, _callee, null, [[5, 19]]);
-      }))();
     }
+  },
+  mounted: function mounted() {
+    this.fetchProfileImage();
   }
 });
 
@@ -986,11 +1037,12 @@ var render = function render() {
       change: _vm.onFileChange
     }
   }), _vm._v(" "), _c("button", {
-    staticClass: "upload-button",
     on: {
       click: _vm.uploadImage
     }
-  }, [_vm._v("Upload Image")])]), _vm._v(" "), _vm._m(1)])]);
+  }, [_vm._v("Upload Image")]), _vm._v(" "), _vm.error ? _c("div", {
+    staticClass: "error"
+  }, [_vm._v(_vm._s(_vm.error))]) : _vm._e()]), _vm._v(" "), _vm._m(1)])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -1007,11 +1059,7 @@ var staticRenderFns = [function () {
     staticClass: "card personal-info"
   }, [_c("h3", [_vm._v("Personal Information")]), _vm._v(" "), _c("div", {
     staticClass: "profile-details"
-  }, [_c("p", [_c("strong", [_vm._v("Staff ID:")]), _vm._v(" 1001")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Email:")]), _vm._v(" admin@mail.com")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Phone:")]), _vm._v(" 0123456789")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Emergency Phone:")]), _vm._v(" -")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Father Name:")]), _vm._v(" ABC")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Mother Name:")]), _vm._v(" XYZ")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Gender:")]), _vm._v(" Male")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Date Of Birth:")]), _vm._v(" 01-01-2006")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Marital Status:")]), _vm._v(" Married")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Blood Group:")]), _vm._v(" A+")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("National ID:")]), _vm._v(" -")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Passport No:")]), _vm._v(" -")])])]), _vm._v(" "), _c("div", {
-    staticClass: "card department-info"
-  }, [_c("h3", [_vm._v("Department Information")]), _vm._v(" "), _c("div", {
-    staticClass: "profile-details"
-  }, [_c("p", [_c("strong", [_vm._v("Department:")]), _vm._v(" Admission")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Designation:")]), _vm._v(" Admin")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Joining Date:")]), _vm._v(" 02-10-2018")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Contract Type:")]), _vm._v(" Full Time")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Work Shift:")]), _vm._v(" Morning")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Salary Type:")]), _vm._v(" Fixed")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Fixed Salary:")]), _vm._v(" 50000 $")])])])]);
+  }, [_c("p", [_c("strong", [_vm._v("Staff ID:")]), _vm._v(" 1001")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Email:")]), _vm._v(" admin@mail.com")])])])]);
 }];
 render._withStripped = true;
 

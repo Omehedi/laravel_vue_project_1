@@ -8,12 +8,11 @@
 
         <div class="profile-content">
             <div class="profile-image-section">
-                <div class="profile-image" :style="{ backgroundImage: `url(${profileImage})` }">
-                    <!-- Placeholder for profile image -->
-                </div>
+                <div :style="{ backgroundImage: `url(${profileImage})` }" class="profile-image"></div>
                 <h2>Super Admin</h2>
                 <input type="file" @change="onFileChange" accept="image/*" />
-                <button @click="uploadImage" class="upload-button">Upload Image</button>
+                <button @click="uploadImage">Upload Image</button>
+                <div v-if="error" class="error">{{ error }}</div>
             </div>
 
             <div class="profile-info">
@@ -22,56 +21,44 @@
                     <div class="profile-details">
                         <p><strong>Staff ID:</strong> 1001</p>
                         <p><strong>Email:</strong> admin@mail.com</p>
-                        <p><strong>Phone:</strong> 0123456789</p>
-                        <p><strong>Emergency Phone:</strong> -</p>
-                        <p><strong>Father Name:</strong> ABC</p>
-                        <p><strong>Mother Name:</strong> XYZ</p>
-                        <p><strong>Gender:</strong> Male</p>
-                        <p><strong>Date Of Birth:</strong> 01-01-2006</p>
-                        <p><strong>Marital Status:</strong> Married</p>
-                        <p><strong>Blood Group:</strong> A+</p>
-                        <p><strong>National ID:</strong> -</p>
-                        <p><strong>Passport No:</strong> -</p>
-                    </div>
-                </div>
-
-                <div class="card department-info">
-                    <h3>Department Information</h3>
-                    <div class="profile-details">
-                        <p><strong>Department:</strong> Admission</p>
-                        <p><strong>Designation:</strong> Admin</p>
-                        <p><strong>Joining Date:</strong> 02-10-2018</p>
-                        <p><strong>Contract Type:</strong> Full Time</p>
-                        <p><strong>Work Shift:</strong> Morning</p>
-                        <p><strong>Salary Type:</strong> Fixed</p>
-                        <p><strong>Fixed Salary:</strong> 50000 $</p>
+                        <!-- Add more fields as needed -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
 <script>
     export default {
-        name: "AdminProfileComponent",
         data() {
             return {
                 selectedImage: null,
-                profileImage: '', // Add this to manage the image source
+                profileImage: '',
+                error: null,
             };
         },
         methods: {
-            onFileChange(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    this.selectedImage = file;
-                    this.profileImage = URL.createObjectURL(file); // Preview the image
+            async fetchProfileImage() {
+                try {
+                    const response = await fetch("http://127.0.0.1:8000/api/get-profile-image", {
+                        headers: {
+                            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        this.profileImage = result.path || ''; // Set the profile image URL if available
+                    } else {
+                        console.error("Failed to fetch profile image.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile image:", error);
                 }
             },
             async uploadImage() {
                 if (!this.selectedImage) {
-                    alert("Please select an image first.");
+                    this.error = "Please select an image first.";
                     return;
                 }
 
@@ -79,29 +66,43 @@
                 formData.append("image", this.selectedImage);
 
                 try {
-                    const response = await fetch("http://your-backend-url/api/upload-profile-image", {
+                    const response = await fetch("http://127.0.0.1:8000/api/upload-profile-image", {
                         method: "POST",
-                        body: formData,
                         headers: {
-                            "X-Requested-With": "XMLHttpRequest",
+                            "Authorization": `Bearer ${localStorage.getItem('token')}`,
                         },
+                        body: formData,
                     });
 
                     if (response.ok) {
                         const result = await response.json();
+                        this.profileImage = result.path;
+                        this.error = null;
                         alert("Image uploaded successfully!");
-                        // You can update the profileImage with the URL from result if needed
                     } else {
-                        alert("Image upload failed.");
+                        const error = await response.json();
+                        this.error = error.message || "Image upload failed.";
                     }
                 } catch (error) {
-                    console.error("Error uploading image:", error);
-                    alert("An error occurred while uploading the image.");
+                    this.error = "An error occurred during the upload.";
+                    console.error("Error:", error);
+                }
+            },
+            onFileChange(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.selectedImage = file;
+                    this.profileImage = URL.createObjectURL(file);
                 }
             },
         },
+        mounted() {
+            this.fetchProfileImage();
+        },
     };
 </script>
+
+
 
 <style scoped>
     .profile-container {
