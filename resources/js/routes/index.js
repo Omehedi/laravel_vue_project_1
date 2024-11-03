@@ -16,6 +16,7 @@ import courseGraduationComponent from "../components/student/courseGraduationCom
 import alumniListComponent from "../components/student/alumniListComponent";
 import studentNotesComponent from "../components/student/studentNotesComponent";
 import adminProfileComponent from "../components/admin/adminProfileComponent";
+import post from "../components/post";
 const route = [
     {
         path : '/admin/dashboard',
@@ -29,19 +30,19 @@ const route = [
     },
     {
         path : '/admin/product/category',
-        name : 'about',
+        name : 'product-category',
         component : categoryComponent,
         meta : {pageTitle: 'Category', dataUrl : 'api/categories'}
     },
     {
         path : '/admin/product/sub_category',
-        name : 'about',
+        name : 'sub-category',
         component : subCategoryComponent,
         meta : {pageTitle: 'Sub-Category', dataUrl : 'api/sub_categories'}
     },
     {
         path : '/admin/product/product',
-        name : 'about',
+        name : 'product',
         component : productComponent,
     },
     {
@@ -104,7 +105,11 @@ const route = [
         name : 'admin-profile',
         component : adminProfileComponent,
     },
-
+    {
+        path : '/admin/admin-post',
+        name : 'admin-post',
+        component :post,
+    },
 
 
 ];

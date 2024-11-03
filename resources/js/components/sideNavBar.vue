@@ -97,6 +97,8 @@
                         </nav>
                     </div>
                     <router-link to="/admin/admin-profile" class="nav-link">My Profile</router-link>
+                    <router-link to="/admin/admin-post" class="nav-link">Post</router-link>
+
                 </div>
             </div>
             <div class="sb-sidenav-footer">

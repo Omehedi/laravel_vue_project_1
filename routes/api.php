@@ -20,6 +20,10 @@ use App\Http\Controllers\SupportController;
 
 use App\Http\Controllers\ManageController;
 use App\Http\Controllers\ProfileImageController;
+use App\Http\Controllers\PostController;
+
+
+Route::apiResource('posts', PostController::class);
 
 Route::post('/upload-profile-image', [ProfileImageController::class, 'upload']);
 Route::get('/get-profile-image', [ProfileImageController::class, 'getProfileImage']);
