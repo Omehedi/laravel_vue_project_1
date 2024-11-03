@@ -13,13 +13,13 @@
                 />
             </div>
             <div class="mb-3">
-                <textarea
+                <vue2-tinymce-editor
                         v-model="post.content"
                         class="form-control"
                         rows="4"
                         placeholder="Content"
                         required
-                ></textarea>
+                ></vue2-tinymce-editor>
             </div>
             <button type="submit" class="btn btn-primary w-100">
                 {{ editMode ? 'Update' : 'Create' }} Post
@@ -32,7 +32,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h3 class="card-title">{{ post.title }}</h3>
-                        <p class="card-text">{{ post.content }}</p>
+                        <p class="card-text" v-html="post.content"></p> <!-- Render HTML safely -->
                     </div>
                     <div class="card-footer d-flex justify-content-between">
                         <button @click="editPost(post)" class="btn btn-sm btn-warning">
@@ -51,10 +51,14 @@
 <script>
     import PostService from './services/PostService';
     import Vue2TinymceEditor from "vue2-tinymce-editor/src/lib-components/Vue2TinymceEditor";
+    import DOMPurify from 'dompurify';
+    import httpMixin from "../mixins/httpMixin";
+
 
     export default {
         name: "Post",
-        component:{Vue2TinymceEditor},
+        components: { Vue2TinymceEditor },
+        mixins:[httpMixin],
         data() {
             return {
                 posts: [],
@@ -74,35 +78,42 @@
                     });
             },
             savePost() {
-                if (this.editMode) {
-                    PostService.updatePost(this.editingPostId, this.post)
-                        .then(() => {
-                            this.fetchPosts();
-                            this.resetForm();
-                        });
-                } else {
-                    PostService.createPost(this.post)
-                        .then(() => {
-                            this.fetchPosts();
-                            this.resetForm();
-                        });
-                }
+                // Sanitize the content from TinyMCE before saving
+                this.post.content = DOMPurify.sanitize(this.post.content);
+
+                const saveAction = this.editMode
+                    ? PostService.updatePost(this.editingPostId, this.post)
+                    : PostService.createPost(this.post);
+
+                saveAction
+                    .then(() => {
+                        this.fetchPosts();
+                        this.resetForm();
+                    })
+                    .catch(error => {
+                        console.error("There was an error saving the post:", error);
+                    });
             },
             editPost(post) {
-                this.post = { ...post };
-                this.editMode = true;
-                this.editingPostId = post.id;
+                this.post = { ...post };  // Copy the post to the form
+                this.editMode = true;      // Enable edit mode
+                this.editingPostId = post.id; // Set the ID of the post being edited
             },
             deletePost(id) {
                 PostService.deletePost(id)
                     .then(() => {
-                        this.fetchPosts();
+                        this.fetchPosts(); // Refresh the post list
+                        this.$toast.success(type === 'Post' ? 'Post deleted successfully' : 'Post deleted successfully');
+
+                    })
+                    .catch(error => {
+                        console.error("There was an error deleting the post:", error);
                     });
             },
             resetForm() {
-                this.post = { title: '', content: '' };
-                this.editMode = false;
-                this.editingPostId = null;
+                this.post = { title: '', content: '' }; // Reset the post object
+                this.editMode = false; // Reset edit mode
+                this.editingPostId = null; // Clear the editing ID
             }
         }
     };
@@ -117,9 +128,11 @@
         border-radius: 8px;
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
     }
+
     .card-title {
         font-size: 1.25rem;
     }
+
     .card-footer {
         background-color: #f8f9fa;
     }
