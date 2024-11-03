@@ -52,13 +52,12 @@
     import PostService from './services/PostService';
     import Vue2TinymceEditor from "vue2-tinymce-editor/src/lib-components/Vue2TinymceEditor";
     import DOMPurify from 'dompurify';
-    import httpMixin from "../mixins/httpMixin";
-
+    import commonMixin from "../mixins/commonMixin"
 
     export default {
         name: "Post",
         components: { Vue2TinymceEditor },
-        mixins:[httpMixin],
+        mixins: [commonMixin],
         data() {
             return {
                 posts: [],
@@ -89,6 +88,7 @@
                     .then(() => {
                         this.fetchPosts();
                         this.resetForm();
+                        this.showToast(this.editMode ? 'Post updated successfully' : 'Post created successfully');
                     })
                     .catch(error => {
                         console.error("There was an error saving the post:", error);
@@ -103,8 +103,7 @@
                 PostService.deletePost(id)
                     .then(() => {
                         this.fetchPosts(); // Refresh the post list
-                        this.$toast.success(type === 'Post' ? 'Post deleted successfully' : 'Post deleted successfully');
-
+                        this.showToast('Post deleted successfully');
                     })
                     .catch(error => {
                         console.error("There was an error deleting the post:", error);
